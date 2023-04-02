@@ -511,6 +511,27 @@ var products = {
         console.error(err);
       };
     },
+
+    submit: () => {
+    // (D1) GATHER ORDER DETAILS
+    var customerName = document.getElementById("name").value;
+    var customerPhone = document.getElementById("phone").value;
+    var order = {
+      name: customerName,
+      phone: customerPhone,
+      items: cart.items,
+      total: cart.total
+    };
+
+    // (D2) SEND TO SERVER
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/server.php");
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(order));
+
+    // (D3) DISPLAY CONFIRMATION MESSAGE
+    alert(`Thank you, ${customerName}! Your order has been placed.`);
+    },
   
     // (B) ADD NEW ORDER
     add : () => {
@@ -546,23 +567,21 @@ var products = {
     },
   
     // (C) PRINT RECEIPT FOR CURRENT ORDER
-    print : () => {
-      // (C1) GENERATE RECEIPT
-      var wrapper = document.getElementById("posreceipt");
-      wrapper.innerHTML = "";
-      for (let pid in cart.items) {
-        let item = document.createElement("div");
-        item.innerHTML = `${cart.items[pid]} X ${products.list[pid].name}`;
-        wrapper.appendChild(item);
-      }
+    print: () => {
+        // (C1) GENERATE RECEIPT
+        var wrapper = document.getElementById("posreceipt");
+        wrapper.innerHTML = "";
+        for (let pid in cart.items) {
+            let item = document.createElement("div");
+            item.innerHTML = `${cart.items[pid]} X ${products.list[pid].name}`;
+            wrapper.appendChild(item);
+        }
+
+        // (C2) PRINT
+        window.print();
+        }
+
   
-      // (C2) PRINT
-      var printwin = window.open();
-      printwin.document.write(wrapper.innerHTML);
-      printwin.stop();
-      printwin.print();
-      printwin.close();
-    }
   };
   window.addEventListener("DOMContentLoaded", orders.init);
 
